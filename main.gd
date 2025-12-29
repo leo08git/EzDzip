@@ -3,6 +3,7 @@ class_name Main
 
 func _ready():
 	if "-decompile" in OS.get_cmdline_args() or "-compile" in OS.get_cmdline_args():
+		global.fast_mode = true
 		var files: PackedStringArray
 		for file in OS.get_cmdline_args():
 			if "-" in file: continue
@@ -63,7 +64,7 @@ func process_files(files: PackedStringArray , mode: forcemode = forcemode.NONE):
 		for dfile in files:
 			var r = DirAccess.copy_absolute(dfile , files[0].get_base_dir() + "/temp_ezdzip/" + dfile.get_file())
 			if r != OK: 
-				global.OS_alert_dontoverlap("Something went wrong while copying files to temporary folder."); return
+				global.OS_alert_dontoverlap("Something went wrong while copying files to temporary ezdzip folder."); return
 
 ## Compiles the folder whilst checking if it gone wrong to return, if it doesnt, wait for it to compile and rename the  folder to the name the user input
 		if (mode == forcemode.COMPRESS or mode == forcemode.NONE): if global.dzip_compile(files[0].get_base_dir() + "/temp_ezdzip") != OK: global.OS_alert_dontoverlap("Something went wrong while trying to compile to dz."); return

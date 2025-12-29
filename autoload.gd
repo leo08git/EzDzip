@@ -7,6 +7,7 @@ signal compile_success
 var main_object: Main
 var current_path: String
 var is_process_running := false
+var fast_mode := false
 
 var decompile_thread: Thread
 var compile_thread: Thread
@@ -26,10 +27,14 @@ func remove_dcl() -> void:
 	if result != OK: OS_alert_dontoverlap("Unable to delete temporary dc.dcl. (dzip config file)")
 
 func dzip_decompile(path_to_file: String , warn := true) -> Error:
+	warn = false if fast_mode else warn
+
 	current_path = path_to_file.get_base_dir()
 	var path_to_dzip = path_to_file.get_base_dir() + "/dzip.exe"
 ## Create a new dzip.exe on the file's folder
 	var dzip = FileAccess.open(path_to_dzip , FileAccess.WRITE)
+	if not dzip: OS_alert_dontoverlap("An error occured when creating a dzip file on the destination path, error: %s (show this to the developer)" % FileAccess.get_open_error()); return Error.ERR_BUG
+
 ## Copy original bytes to the new dzip
 	dzip.store_buffer(FileAccess.get_file_as_bytes("dzip.exe"))
 	dzip.close()
@@ -47,6 +52,8 @@ func dzip_decompile(path_to_file: String , warn := true) -> Error:
 	return OK
 
 func dzip_compile(path_to_folder: String , warn := true) -> Error:
+	warn = false if fast_mode else warn
+
 	current_path = path_to_folder.get_base_dir()
 	var path_to_dzip = path_to_folder.get_base_dir() + "/dzip.exe"
 ## Create a new dzip.exe on the file's folder
@@ -69,7 +76,6 @@ func dzip_compile(path_to_folder: String , warn := true) -> Error:
 	configdcl.close()
 
 ## Run dzip on configdcl
-	var thread = Thread.new()
 	var result = OS.execute_with_pipe("cmd.exe" , ["/C" , 'cd %s&&dzip dc.dcl' % path_to_folder.get_base_dir()] , false)
 
 	is_process_running = true
