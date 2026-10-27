@@ -1,5 +1,6 @@
 # EzDzip
 *EzDzip is a program designed so users can easily compile and decompile dz files.*
+**Is now archived and no further updates will be released. It is recommended 1.1 as its the only stable release.**
 
 <img width="865" height="580" alt="imagem" src="https://github.com/user-attachments/assets/f249a9f6-da18-4b94-9af7-3b5483cc86ce" />
 
